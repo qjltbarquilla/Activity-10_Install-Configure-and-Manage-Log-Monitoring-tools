@@ -1,0 +1,36 @@
+- name: Install necessary packages
+  yum:
+   name:
+    - libcurl
+    - wget
+    - epel-release
+   state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Add Elasticsearch GPG key
+  rpm_key:
+   state: present
+   key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+  when: ansible_os_family == "RedHat"
+
+- name: Add Elasticsearch repository
+  yum_repository:
+   name: elasticsearch-8.x
+   description: ElasticSearch repository
+   baseurl: https://artifacts.elastic.co/packages/8.x/yum
+   gpgcheck: yes
+   enabled: yes
+   gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+  when: ansible_os_family == "RedHat"
+
+- name: Install Elasticsearch
+  yum:
+   name: elasticsearch
+   state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Start and enable Elasticsearch service
+  service:
+   name: elasticsearch
+   state: started
+   enabled: yes

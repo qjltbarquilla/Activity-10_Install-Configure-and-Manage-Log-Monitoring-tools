@@ -23,7 +23,17 @@
   roles:
     - base
 
-- hosts: all
+- hosts: Elasticsearch_Centos
   become: true
   roles:
-    - servers
+    - Elasticsearch_Centos
+
+- hosts: Kibana_Server1
+  become: true
+  roles:
+    - Kibana_Server1
+
+- hosts: Logstash_Server2
+  become: true
+  roles:
+    - Logstash_Server2

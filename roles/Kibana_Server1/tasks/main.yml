@@ -1,0 +1,40 @@
+- name: Add Elastic GPG key
+  apt_key:
+    url: "https://artifacts.elastic.co/GPG-KEY-elasticsearch"
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Add Elastic APT repository
+  apt_repository:
+    repo: "deb https://artifacts.elastic.co/packages/7.x/apt stable main"
+    state: present
+    filename: elastic-7.x
+  when: ansible_os_family == "Debian"
+
+- name: Update apt package index
+  apt:
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Install Kibana
+  apt:
+   name: kibana
+   state: present
+  when: ansible_os_family == "Debian"
+
+- name: Start and enable Kibana service
+  service:
+   name: kibana
+   state: started
+   enabled: yes
+
+- name: Configure Kibana
+  template:
+   src: kibana.yml.j2
+   dest: /etc/kibana/kibana.yml
+
+- name: Restart Kibana
+  service:
+    name: kibana
+    state: restarted
+  when: ansible_os_family == "Debian"
